@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Course Management Systems</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #046efd;
+            --accent: #10b981;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --bg: #f9f9f9;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --text: #1f2937;
+            --muted: #6b7280;
+            --radius: 12px;
+        }
+
+        * { box-sizing: border-box; margin:0; padding:0; font-family: 'Inter', sans-serif; }
+        body { background: var(--bg); color: var(--text); }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        nav { 
+            display:flex; 
+            justify-content:space-between; 
+            align-items:center; 
+            padding:1rem 2rem;
+            background:white; 
+            box-shadow:0 2px 10px rgba(0,0,0,0.05); 
+            position: sticky; 
+            top:0; 
+            z-index:100; 
+        }
+
+        nav .logo { 
+            font-weight:700; 
+            font-size:1.5rem; 
+            background: linear-gradient(90deg, var(--primary), var(--accent)); 
+            -webkit-background-clip:text; 
+            color:transparent; 
+        }
+
+        nav ul { display:flex; gap:1rem; align-items:center; }
+        nav ul li { padding:0.5rem 1rem; border-radius:var(--radius); }
+        nav ul li:hover { background: rgba(13,110,253,0.1); }
+        nav button { 
+            padding:0.5rem 1rem; 
+            border-radius:var(--radius); 
+            border:none; 
+            cursor:pointer; 
+            background: linear-gradient(90deg, var(--primary), var(--accent)); 
+            color:white; 
+            font-weight:600; 
+        }
+
+        .hero { 
+            display:flex; 
+            flex-direction:column; 
+            justify-content:center; 
+            align-items:center; 
+            text-align:center; 
+            padding:4rem 2rem; 
+            background: linear-gradient(135deg, var(--primary), var(--accent)); 
+            color:white; 
+        }
+
+        .hero h1 { font-size:2.5rem; margin-bottom:1rem; }
+        .hero p { font-size:1.2rem; color: rgba(255,255,255,0.9); }
+
+        section { padding:3rem 2rem; max-width:1000px; margin:auto; }
+        h2 { font-size:2rem; margin-bottom:1rem; text-align:center; }
+
+        .courses { display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:1.5rem; }
+        .course-card { 
+            background:var(--card-bg); 
+            padding:1rem; 
+            border-radius:var(--radius); 
+            box-shadow:0 8px 20px rgba(0,0,0,0.08); 
+            transition: transform 0.3s, box-shadow 0.3s; 
+            display:flex; 
+            flex-direction:column; 
+            justify-content: space-between; 
+        }
+
+        .course-card:hover { 
+            transform: translateY(-5px); 
+            box-shadow:0 12px 30px rgba(0,0,0,0.12); 
+        }
+
+        .course-card h3 { margin-bottom:0.5rem; color: var(--primary); }
+        .course-card p { font-size:0.9rem; color: var(--muted); margin-bottom:0.5rem; }
+        .course-card span { font-weight:600; color: var(--accent); margin-bottom:0.5rem; display: block; }
+        .course-card button { 
+            margin-top:0.5rem; 
+            padding:0.5rem; 
+            border:none; 
+            border-radius:var(--radius); 
+            background: linear-gradient(90deg, var(--accent), var(--primary)); 
+            color:white; 
+            font-weight:600; 
+            cursor:pointer; 
+        }
+
+        .course-card button:disabled { 
+            background: var(--muted); 
+            cursor: not-allowed; 
+        }
+
+        .about p { 
+            text-align:center; 
+            color: var(--muted); 
+            max-width:700px; 
+            margin:auto; 
+            line-height:1.6; 
+        }
+
+        .contact form { 
+            display:flex; 
+            flex-direction:column; 
+            gap:1rem; 
+            max-width:500px; 
+            margin:auto; 
+        }
+
+        .contact input, .contact textarea { 
+            padding:0.75rem 1rem; 
+            border-radius:var(--radius); 
+            border:1px solid #d1d5db; 
+            font-size:1rem; 
+        }
+
+        .contact button { 
+            background: linear-gradient(90deg, var(--primary), var(--accent)); 
+            color:white; 
+            font-weight:600; 
+            padding:0.75rem; 
+            border:none; 
+            border-radius:var(--radius); 
+            cursor:pointer; 
+        }
+
+        footer { 
+            text-align:center; 
+            padding:2rem; 
+            color:var(--muted); 
+            font-size:0.9rem; 
+        }
+
+        .modal { 
+            display:none; 
+            position:fixed; 
+            inset:0; 
+            background: rgba(0,0,0,0.5); 
+            justify-content:center; 
+            align-items:center; 
+            z-index:200; 
+        }
+
+        .modal.active { display:flex; }
+        .modal-content { 
+            background:white; 
+            padding:2rem; 
+            border-radius:var(--radius); 
+            width:90%; 
+            max-width:400px; 
+        }
+
+        .modal-content h3 { margin-bottom:1rem; text-align:center; }
+        .modal-content input { 
+            width:100%; 
+            padding:0.75rem 1rem; 
+            margin-bottom:1rem; 
+            border-radius:var(--radius); 
+            border:1px solid #d1d5db; 
+            font-size:1rem; 
+        }
+
+        .modal-content button { 
+            width:100%; 
+            padding:0.75rem; 
+            border:none; 
+            border-radius:var(--radius); 
+            background: linear-gradient(90deg, var(--primary), var(--accent)); 
+            color:white; 
+            font-weight:600; 
+            cursor:pointer; 
+        }
+
+        .modal-content .error { 
+            color: var(--danger); 
+            font-size:0.9rem; 
+            margin-bottom:1rem; 
+            text-align:center; 
+            display: none; 
+        }
+
+        .modal-content .switch-form { 
+            text-align:center; 
+            margin-top:1rem; 
+            font-size:0.9rem; 
+        }
+
+        .modal-content .switch-form a { 
+            color: var(--primary); 
+            cursor:pointer; 
+        }
+
+        .user-info { display: flex; align-items: center; gap: 0.5rem; }
+        .user-avatar { 
+            width: 32px; 
+            height: 32px; 
+            border-radius: 50%; 
+            background: linear-gradient(135deg, var(--primary), var(--accent)); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: white; 
+            font-weight: bold; 
+        }
+
+        .search-filter { 
+            display: flex; 
+            gap: 1rem; 
+            margin-bottom: 2rem; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+        }
+
+        .search-filter input, .search-filter select { 
+            padding: 0.75rem; 
+            border-radius: var(--radius); 
+            border: 1px solid #d1d5db; 
+            min-width: 200px; 
+        }
+
+        .dashboard-stats { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 1rem; 
+            margin-bottom: 2rem; 
+        }
+
+        .stat-card { 
+            background: white; 
+            padding: 1.5rem; 
+            border-radius: var(--radius); 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+            text-align: center; 
+        }
+
+        .stat-card h3 { color: var(--muted); font-size: 0.9rem; margin-bottom: 0.5rem; }
+        .stat-card .number { font-size: 2rem; font-weight: bold; color: var(--primary); }
+
+        .progress-bar { 
+            background: #f0f0f0; 
+            border-radius: var(--radius); 
+            height: 8px; 
+            margin: 0.5rem 0; 
+            overflow: hidden; 
+        }
+
+        .progress-fill { 
+            background: var(--accent); 
+            height: 100%; 
+            border-radius: var(--radius); 
+            transition: width 0.3s ease; 
+        }
+
+        .enrolled-courses { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 1.5rem; 
+        }
+
+        .loading { 
+            display: inline-block; 
+            width: 20px; 
+            height: 20px; 
+            border: 3px solid #f3f3f3; 
+            border-top: 3px solid var(--primary); 
+            border-radius: 50%; 
+            animation: spin 1s linear infinite; 
+        }
+
+        @keyframes spin { 
+            0% { transform: rotate(0deg); } 
+            100% { transform: rotate(360deg); } 
+        }
+
+        .btn-loading { position: relative; color: transparent; }
+        .btn-loading::after { 
+            content: ""; 
+            position: absolute; 
+            left: 50%; 
+            top: 50%; 
+            transform: translate(-50%, -50%); 
+            width: 20px; 
+            height: 20px; 
+            border: 2px solid transparent; 
+            border-top: 2px solid white; 
+            border-radius: 50%; 
+            animation: spin 1s linear infinite; 
+        }
+
+        /* FIXED: Changed ..notification to .notification */
+        .notification { 
+            position: fixed; 
+            top: 20px; 
+            right: 20px; 
+            padding: 1rem 1.5rem; 
+            border-radius: var(--radius); 
+            color: white; 
+            font-weight: 600; 
+            z-index: 1000; 
+            transform: translateX(400px); 
+            transition: transform 0.3s ease; 
+        }
+
+        .notification.success { background: var(--accent); }
+        .notification.error { background: var(--danger); }
+        .notification.show { transform: translateX(0); }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">SmartCourse</div>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#courses">Courses</a></li>
+            <li><a href="#dashboard" id="dashboard-link" style="display: none;">Dashboard</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li id="user-info" class="user-info" style="display:none;">
+                <div class="user-avatar" id="user-avatar">U</div>
+                <span id="username-display">User</span>
+            </li>
+            <li><button id="login-btn">Login</button></li>
+            <li><button id="register-btn">Register</button></li>
+            <li><button id="logout-btn" style="display:none;">Logout</button></li>
+        </ul>
+    </nav>
+
+    <section class="hero" id="home">
+        <h1>Smart Course Management System</h1>
+        <p>Learn, Manage, and Grow. Complete with User Authentication & Course Enrollment.</p>
+    </section>
+
+    <section id="courses">
+        <h2>Our Courses</h2>
+        <div class="search-filter">
+            <input type="text" id="search-input" placeholder="Search courses...">
+            <select id="category-filter">
+                <option value="">All Categories</option>
+                <option value="Programming">Programming</option>
+                <option value="Web Design">Web Design</option>
+                <option value="Data Science">Data Science</option>
+                <option value="Database">Database</option>
+                <option value="Design">Design</option>
+            </select>
+            <select id="level-filter">
+                <option value="">All Levels</option>
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+            </select>
+            <button onclick="createSampleCourses()" style="padding: 0.75rem 1rem; background: var(--accent); color: white; border: none; border-radius: var(--radius); cursor: pointer;">
+                Create Sample Courses
+            </button>
+        </div>
+        <div class="courses">
+            <div class="course-card">
+                <h3>Loading Courses...</h3>
+                <p>Please wait while we fetch the latest courses.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="dashboard" style="display: none;">
+        <h2>My Learning Dashboard</h2>
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <h3>Enrolled Courses</h3>
+                <div class="number" id="enrolled-count">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Completed</h3>
+                <div class="number" id="completed-count">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>In Progress</h3>
+                <div class="number" id="progress-count">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Overall Progress</h3>
+                <div class="number" id="overall-progress">0%</div>
+            </div>
+        </div>
+
+        <h3>My Enrolled Courses</h3>
+        <div class="enrolled-courses" id="enrolled-courses-list">
+            <!-- Enrolled courses will be loaded here -->
+        </div>
+    </section>
+
+    <section class="about" id="about">
+        <h2>About SmartCourse</h2>
+        <p>SmartCourse is a complete course management system with user authentication, course enrollment, progress tracking, and a beautiful responsive interface. Start your learning journey today!</p>
+    </section>
+
+    <section class="contact" id="contact">
+        <h2>Contact Us</h2>
+        <form id="contact-form">
+            <input type="text" id="name" placeholder="Your Name" required>
+            <input type="email" id="email" placeholder="Your Email" required>
+            <textarea id="message" rows="4" placeholder="Your Message" required></textarea>
+            <button type="submit">Send Message</button>
+        </form>
+    </section>
+
+    <footer>
+        &copy; 2025 SmartCourse. All rights reserved.
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <h3>Login to Your Account</h3>
+            <div class="error" id="login-error"></div>
+            <input type="email" id="login-email" placeholder="Email" required>
+            <input type="password" id="login-password" placeholder="Password" required>
+            <button id="submit-login">Login</button>
+            <div class="switch-form">
+                Don't have an account? <a id="switch-to-register">Register here</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal" id="register-modal">
+        <div class="modal-content">
+            <h3>Create Your Account</h3>
+            <div class="error" id="register-error"></div>
+            <input type="text" id="reg-username" placeholder="Username" required>
+            <input type="email" id="reg-email" placeholder="Email" required>
+            <input type="password" id="reg-password" placeholder="Password (min. 6 characters)" required>
+            <input type="text" id="reg-firstname" placeholder="First Name (optional)">
+            <input type="text" id="reg-lastname" placeholder="Last Name (optional)">
+            <button id="submit-register">Create Account</button>
+            <div class="switch-form">
+                Already have an account? <a id="switch-to-login">Login here</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Configuration
+        const API_BASE = 'http://localhost:5000/api';
+
+        // Application State
+        let currentUser = null;
+        let authToken = localStorage.getItem('sc_token');
+        let allCourses = [];
+
+        // DOM Elements
+        const loginBtn = document.getElementById('login-btn');
+        const registerBtn = document.getElementById('register-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const loginModal = document.getElementById('login-modal');
+        const registerModal = document.getElementById('register-modal');
+        const userInfo = document.getElementById('user-info');
+        const userAvatar = document.getElementById('user-avatar');
+        const usernameDisplay = document.getElementById('username-display');
+        const dashboardLink = document.getElementById('dashboard-link');
+        const dashboardSection = document.getElementById('dashboard');
+        const loginError = document.getElementById('login-error');
+        const registerError = document.getElementById('register-error');
+
+        // Utility Functions
+        function showError(element, message) {
+            element.textContent = message;
+            element.style.display = 'block';
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 5000);
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 4000);
+        }
+
+        function setLoading(button, isLoading) {
+            if (isLoading) {
+                button.disabled = true;
+                button.classList.add('btn-loading');
+                button.textContent = 'Loading...';
+            } else {
+                button.disabled = false;
+                button.classList.remove('btn-loading');
+                if (button.id === 'submit-login') {
+                    button.textContent = 'Login';
+                } else if (button.id === 'submit-register') {
+                    button.textContent = 'Create Account';
+                }
+            }
+        }
+
+        function clearModals() {
+            // Clear input fields
+            document.getElementById('login-email').value = '';
+            document.getElementById('login-password').value = '';
+            document.getElementById('reg-username').value = '';
+            document.getElementById('reg-email').value = '';
+            document.getElementById('reg-password').value = '';
+            document.getElementById('reg-firstname').value = '';
+            document.getElementById('reg-lastname').value = '';
+
+            // Hide errors
+            loginError.style.display = 'none';
+            registerError.style.display = 'none';
+        }
+
+        // Authentication Functions
+        async function checkAuth() {
+            if (!authToken) {
+                updateAuthUI();
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/me`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    const userData = await response.json();
+                    currentUser = userData.user || userData;
+                    updateAuthUI();
+                    await loadUserEnrollments();
+                } else {
+                    // Token is invalid
+                    localStorage.removeItem('sc_token');
+                    authToken = null;
+                    updateAuthUI();
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                localStorage.removeItem('sc_token');
+                authToken = null;
+                updateAuthUI();
+            }
+        }
+
+        function updateAuthUI() {
+            if (currentUser && authToken) {
+                // User is logged in
+                loginBtn.style.display = 'none';
+                registerBtn.style.display = 'none';
+                logoutBtn.style.display = 'inline-block';
+                userInfo.style.display = 'flex';
+                dashboardLink.style.display = 'inline-block';
+                userAvatar.textContent = currentUser.username.charAt(0).toUpperCase();
+                usernameDisplay.textContent = currentUser.username;
+            } else {
+                // User is not logged in
+                loginBtn.style.display = 'inline-block';
+                registerBtn.style.display = 'inline-block';
+                logoutBtn.style.display = 'none';
+                userInfo.style.display = 'none';
+                dashboardLink.style.display = 'none';
+                dashboardSection.style.display = 'none';
+                currentUser = null;
+            }
+        }
+
+        async function registerUser(userData) {
+            try {
+                const response = await fetch(`${API_BASE}/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(userData),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    return { success: true, data };
+                } else {
+                    return {
+                        success: false,
+                        error: data.message || 'Registration failed',
+                        errors: data.errors
+                    };
+                }
+            } catch (error) {
+                return {
+                    success: false,
+                    error: 'Network error. Please try again.'
+                };
+            }
+        }
+
+        async function loginUser(credentials) {
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(credentials),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    return { success: true, data };
+                } else {
+                    return {
+                        success: false,
+                        error: data.message || 'Login failed'
+                    };
+                }
+            } catch (error) {
+                return {
+                    success: false,
+                    error: 'Network error. Please try again.'
+                };
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('sc_token');
+            authToken = null;
+            currentUser = null;
+            updateAuthUI();
+            loadCourses();
+            showNotification('You have been logged out successfully.');
+        }
+
+        // Event Handlers
+        document.getElementById('submit-register').addEventListener('click', async () => {
+            const registerButton = document.getElementById('submit-register');
+            const username = document.getElementById('reg-username').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-password').value.trim();
+            const firstName = document.getElementById('reg-firstname').value.trim();
+            const lastName = document.getElementById('reg-lastname').value.trim();
+
+            // Basic validation
+            if (!username || !email || !password) {
+                showError(registerError, 'Please fill in all required fields');
+                return;
+            }
+
+            if (password.length < 6) {
+                showError(registerError, 'Password must be at least 6 characters long');
+                return;
+            }
+
+            if (username.length < 3) {
+                showError(registerError, 'Username must be at least 3 characters long');
+                return;
+            }
+
+            setLoading(registerButton, true);
+
+            const result = await registerUser({
+                username,
+                email,
+                password,
+                firstName,
+                lastName
+            });
+
+            setLoading(registerButton, false);
+
+            if (result.success) {
+                // Registration successful
+                localStorage.setItem('sc_token', result.data.token);
+                authToken = result.data.token;
+                currentUser = result.data.user;
+                updateAuthUI();
+                registerModal.classList.remove('active');
+                clearModals();
+                showNotification(`Welcome to SmartCourse, ${currentUser.username}! Your account has been created successfully.`);
+                loadCourses();
+            } else {
+                // Registration failed
+                if (result.errors) {
+                    showError(registerError, result.errors.join('. '));
+                } else {
+                    showError(registerError, result.error);
+                }
+            }
+        });
+
+        document.getElementById('submit-login').addEventListener('click', async () => {
+            const loginButton = document.getElementById('submit-login');
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+
+            if (!email || !password) {
+                showError(loginError, 'Please enter both email and password');
+                return;
+            }
+
+            setLoading(loginButton, true);
+
+            const result = await loginUser({
+                email,
+                password
+            });
+
+            setLoading(loginButton, false);
+
+            if (result.success) {
+                // Login successful
+                localStorage.setItem('sc_token', result.data.token);
+                authToken = result.data.token;
+                currentUser = result.data.user;
+                updateAuthUI();
+                loginModal.classList.remove('active');
+                clearModals();
+                showNotification(`Welcome back, ${currentUser.username}!`);
+                loadCourses();
+            } else {
+                // Login failed
+                showError(loginError, result.error);
+            }
+        });
+
+        // Modal Management
+        loginBtn.addEventListener('click', () => {
+            clearModals();
+            loginModal.classList.add('active');
+        });
+
+        registerBtn.addEventListener('click', () => {
+            clearModals();
+            registerModal.classList.add('active');
+        });
+
+        logoutBtn.addEventListener('click', handleLogout);
+
+        // Switch between login and register modals
+        document.getElementById('switch-to-register').addEventListener('click', () => {
+            loginModal.classList.remove('active');
+            registerModal.classList.add('active');
+        });
+
+        document.getElementById('switch-to-login').addEventListener('click', () => {
+            registerModal.classList.remove('active');
+            loginModal.classList.add('active');
+        });
+
+        // Close modals when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === loginModal) {
+                loginModal.classList.remove('active');
+                clearModals();
+            }
+            if (e.target === registerModal) {
+                registerModal.classList.remove('active');
+                clearModals();
+            }
+        });
+
+        // Close modals with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                loginModal.classList.remove('active');
+                registerModal.classList.remove('active');
+                clearModals();
+            }
+        });
+
+        // Search and Filter Functionality
+        document.getElementById('search-input').addEventListener('input', async (e) => {
+            await loadCourses(e.target.value);
+        });
+
+        document.getElementById('category-filter').addEventListener('change', async (e) => {
+            await loadCourses(null, e.target.value);
+        });
+
+        document.getElementById('level-filter').addEventListener('change', async (e) => {
+            await loadCourses(null, null, e.target.value);
+        });
+
+        // Course Management - FIXED
+        async function loadCourses(search = null, category = null, level = null) {
+            try {
+                let url = `${API_BASE}/courses`;
+                const params = [];
+
+                if (search) params.push(`search=${encodeURIComponent(search)}`);
+                if (category) params.push(`category=${encodeURIComponent(category)}`);
+                if (level) params.push(`level=${encodeURIComponent(level)}`);
+
+                if (params.length > 0) {
+                    url += `?${params.join('&')}`;
+                }
+
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch courses');
+                }
+
+                const data = await response.json();
+                console.log('Courses API response:', data);
+
+                // Handle both response formats
+                const courses = data.courses || data;
+                allCourses = courses;
+
+                const coursesContainer = document.querySelector('.courses');
+                if (!courses || courses.length === 0) {
+                    coursesContainer.innerHTML = `
+                        <div class="course-card" style="grid-column: 1 / -1; text-align: center;">
+                            <h3>No Courses Available</h3>
+                            <p>No courses found. Click the "Create Sample Courses" button above to get started.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // FIXED: Complete course card generation
+                coursesContainer.innerHTML = courses.map(course => {
+                    const course_id = course._id || course.id;
+                    if (!course_id) {
+                        console.error('Course missing _id:', course);
+                        return '';
+                    }
+                    return `
+                        <div class="course-card">
+                            <h3>${course.title}</h3>
+                            <p>${course.description}</p>
+                            <span>Duration: ${course.duration}</span>
+                            <span>Level: ${course.level}</span>
+                            <span>Category: ${course.category}</span>
+                            <span>Instructor: ${course.instructor?.username || 'Admin'}</span>
+                            <span>Enrolled: ${course.enrollmentCount || 0} students</span>
+                            <button class="enroll-btn" data-course-id="${course_id}">
+                                ${currentUser ? 'Enroll Now' : 'Login to Enroll'}
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+
+                // Add event listeners to enroll buttons
+                document.querySelectorAll('.enroll-btn').forEach(btn => {
+                    btn.addEventListener('click', async () => {
+                        const courseId = btn.getAttribute('data-course-id');
+                        console.log('Enrolling in course ID:', courseId);
+
+                        if (!currentUser) {
+                            showNotification('Please login first to enroll in courses.', 'error');
+                            loginModal.classList.add('active');
+                            return;
+                        }
+
+                        if (!courseId || courseId === 'undefined') {
+                            showNotification('Error: Invalid course data. Please refresh the page.', 'error');
+                            return;
+                        }
+
+                        await enrollInCourse(courseId, btn);
+                    });
+                });
+
+            } catch (error) {
+                console.error('Failed to load courses:', error);
+                const coursesContainer = document.querySelector('.courses');
+                coursesContainer.innerHTML = `
+                    <div class="course-card" style="grid-column: 1 / -1; text-align: center;">
+                        <h3>Connection Error</h3>
+                        <p>Unable to load courses. Please make sure the backend server is running on http://localhost:5000</p>
+                        <div style="margin-top: 1rem;">
+                            <button onclick="loadCourses()" style="margin: 0.5rem; padding: 0.5rem 1rem; background: var(--primary); color: white; border: none; border-radius: var(--radius); cursor: pointer;">
+                                Retry Load Courses
+                            </button>
+                            <button onclick="createSampleCourses()" style="margin: 0.5rem; padding: 0.5rem 1rem; background: var(--accent); color: white; border: none; border-radius: var(--radius); cursor: pointer;">
+                                Create Sample Courses
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        async function enrollInCourse(courseId, button) {
+            if (!currentUser || !authToken) {
+                showNotification('Please login to enroll in courses.', 'error');
+                return;
+            }
+
+            // Validate course ID format
+            if (!courseId || courseId === 'undefined' || courseId.length !== 24) {
+                showNotification('Error: Invalid course data. Please refresh the page and try again.', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/enrollments/enroll`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({ courseId }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showNotification(`Successfully enrolled in "${button.parentElement.querySelector('h3').innerText}"`);
+                    button.textContent = 'Enrolled';
+                    button.disabled = true;
+                    button.style.background = 'var(--muted)';
+
+                    // Reload courses to update enrollment counts and load user enrollments
+                    await loadCourses();
+                    await loadUserEnrollments();
+                } else {
+                    showNotification(data.message || 'Enrollment failed. Please try again.', 'error');
+                }
+            } catch (error) {
+                showNotification('Enrollment failed. Please check your connection and try again.', 'error');
+            }
+        }
+
+        // Create sample courses
+        async function createSampleCourses() {
+            try {
+                const response = await fetch(`${API_BASE}/courses/seed`, {
+                    method: 'POST'
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showNotification(data.message || 'Sample courses created successfully!');
+                    await loadCourses();
+                } else {
+                    showNotification(data.message || 'Failed to create sample courses', 'error');
+                }
+            } catch (error) {
+                showNotification('Error creating sample courses. Make sure backend is running.', 'error');
+            }
+        }
+
+        // Load user's enrolled courses and update dashboard
+        async function loadUserEnrollments() {
+            if (!currentUser) return;
+
+            try {
+                const token = localStorage.getItem('sc_token');
+                const response = await fetch(`${API_BASE}/enrollments/my-courses`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const enrollments = data.enrollments || data;
+                    const enrolledContainer = document.getElementById('enrolled-courses-list');
+
+                    // Update statistics
+                    const enrolledCount = enrollments.length;
+                    const completedCount = enrollments.filter(e => e.completed).length;
+                    const progressCount = enrolledCount - completedCount;
+                    const overallProgress = enrolledCount > 0 ?
+                        Math.round(enrollments.reduce((sum, e) => sum + e.progress, 0) / enrolledCount) : 0;
+
+                    document.getElementById('enrolled-count').textContent = enrolledCount;
+                    document.getElementById('completed-count').textContent = completedCount;
+                    document.getElementById('progress-count').textContent = progressCount;
+                    document.getElementById('overall-progress').textContent = `${overallProgress}%`;
+
+                    if (enrollments.length === 0) {
+                        enrolledContainer.innerHTML = `
+                            <div class="course-card" style="grid-column: 1 / -1; text-align: center;">
+                                <h3>No Enrollments Yet</h3>
+                                <p>You haven't enrolled in any courses. Browse our courses and start learning!</p>
+                                <a href="#courses" style="display: inline-block; margin-top: 1rem; padding: 0.5rem 1rem; background: var(--primary); color: white; border-radius: var(--radius);">Browse Courses</a>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    enrolledContainer.innerHTML = enrollments.map(enrollment => `
+                        <div class="course-card">
+                            <h3>${enrollment.course.title}</h3>
+                            <p>${enrollment.course.description}</p>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${enrollment.progress}%"></div>
+                            </div>
+                            <span>Progress: ${enrollment.progress}%</span>
+                            <span>Enrolled: ${new Date(enrollment.createdAt).toLocaleDateString()}</span>
+                            <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                                <button onclick="updateProgress('${enrollment._id}', Math.min(${enrollment.progress + 25}, 100))"
+                                    style="flex: 1; padding: 0.5rem; background: var(--primary); color: white; border: none; border-radius: var(--radius); cursor: pointer;">
+                                    +25% Progress
+                                </button>
+                                <button onclick="updateProgress('${enrollment._id}', 100)"
+                                    style="flex: 1; padding: 0.5rem; background: var(--accent); color: white; border: none; border-radius: var(--radius); cursor: pointer;">
+                                    Complete
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    // Show dashboard if user has enrollments
+                    dashboardSection.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Failed to load user enrollments:', error);
+            }
+        }
+
+        // Update progress function
+        async function updateProgress(enrollmentId, progress) {
+            try {
+                const token = localStorage.getItem('sc_token');
+                const response = await fetch(`${API_BASE}/enrollments/${enrollmentId}/progress`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ progress }),
+                });
+
+                if (response.ok) {
+                    showNotification('Progress updated successfully!');
+                    await loadUserEnrollments();
+                } else {
+                    showNotification('Failed to update progress', 'error');
+                }
+            } catch (error) {
+                console.error('Failed to update progress:', error);
+                showNotification('Error updating progress', 'error');
+            }
+        }
+
+        // Navigation to dashboard
+        dashboardLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            dashboardSection.scrollIntoView({ behavior: 'smooth' });
+            dashboardSection.style.display = 'block';
+        });
+
+        // Contact form
+        document.getElementById('contact-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            showNotification('Thank you for your message! We will get back to you soon.');
+            e.target.reset();
+        });
+
+        // Initialize Application
+        window.addEventListener('load', async () => {
+            await checkAuth();
+            await loadCourses();
+        });
+    </script>
+</body>
+</html>
